@@ -15,6 +15,6 @@ logging:
 # swagger 文档配置
 swagger:
   title: "xstudy content"
-  base-package: com.xstudy.api
+  base-package: com.xstudy.content.api
   enabled: true
   version: 1.0.0
