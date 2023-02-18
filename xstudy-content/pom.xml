@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.xstudy</groupId>
+    <artifactId>xstudy-parent</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+  <artifactId>xstudy-content</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>xstudy-content</name>
+  <description>xstudy-content</description>
+  <properties>
+    <java.version>17</java.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.xstudy</groupId>
+      <artifactId>xstudy-base</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+    <!--存在mybatisplus注解添加相关注解保证不报错-->
+    <dependency>
+      <groupId>com.baomidou</groupId>
+      <artifactId>mybatis-plus-annotation</artifactId>
+      <version>${mybatis-plus-boot-starter.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.baomidou</groupId>
+      <artifactId>mybatis-plus-core</artifactId>
+      <version>${mybatis-plus-boot-starter.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+    </dependency>
+  </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>8</source>
+          <target>8</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
