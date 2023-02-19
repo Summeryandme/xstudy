@@ -66,7 +66,7 @@
       <!-- mapstruct 代码生成器，简化java bean之间的映射 -->
       <dependency>
         <groupId>org.mapstruct</groupId>
-        <artifactId>mapstruct-jdk8</artifactId>
+        <artifactId>mapstruct</artifactId>
         <version>${org.mapstruct.version}</version>
       </dependency>
       <dependency>
@@ -185,14 +185,5 @@
     </dependencies>
 
   </dependencyManagement>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-maven-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </build>
 
 </project>

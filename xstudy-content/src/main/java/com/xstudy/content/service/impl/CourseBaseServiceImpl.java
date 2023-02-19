@@ -2,20 +2,21 @@ package com.xstudy.content.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.xstudy.content.mapper.CourseBaseMapper;
 import com.xstudy.content.model.PageParams;
 import com.xstudy.content.model.PageResult;
 import com.xstudy.content.model.dto.QueryCourseParamsDto;
 import com.xstudy.content.model.po.CourseBase;
+import com.xstudy.content.repository.CourseBaseMapper;
 import com.xstudy.content.service.CourseBaseService;
-import javax.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class CourseBaseServiceImpl implements CourseBaseService {
 
-  @Resource private CourseBaseMapper courseBaseMapper;
+  private final CourseBaseMapper courseBaseMapper;
 
   @Override
   public PageResult<CourseBase> queryCourseBaseList(

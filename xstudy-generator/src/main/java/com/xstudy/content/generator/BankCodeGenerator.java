@@ -55,14 +55,14 @@ public class BankCodeGenerator {
 		dsc.setDbType(DbType.MYSQL);
 		dsc.setUrl("jdbc:mysql://localhost:3306/" + SERVICE_NAME
 				+ "?useUnicode=true&useSSL=false&characterEncoding=utf8");
-		dsc.setDriverName("com.mysql.jdbc.Driver");
+		dsc.setDriverName("com.mysql.cj.jdbc.Driver");
 		dsc.setUsername(DATA_SOURCE_USER_NAME);
 		dsc.setPassword(DATA_SOURCE_PASSWORD);
 		mpg.setDataSource(dsc);
 
 		// 包配置
 		PackageConfig pc = new PackageConfig();
-		pc.setParent("com.xuecheng.rocketmq");
+		pc.setParent("com.xstudy.rocketmq");
 
 		pc.setServiceImpl("service.impl");
 		pc.setXml("mapper");

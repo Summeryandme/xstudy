@@ -7,77 +7,39 @@
     <groupId>com.xstudy</groupId>
     <artifactId>xstudy-parent</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <relativePath>../xstudy-parent</relativePath>
   </parent>
-  <artifactId>xstudy-content</artifactId>
+  <groupId>com.xstudy</groupId>
+  <artifactId>xstudy-system</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <name>xstudy-content</name>
-  <description>xstudy-content</description>
+  <name>xstudy-system</name>
+  <description>xstudy-system</description>
   <properties>
-    <java.version>1.8</java.version>
+    <java.version>17</java.version>
   </properties>
-
   <dependencies>
-    <dependency>
-      <groupId>com.xstudy</groupId>
-      <artifactId>xstudy-base</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
-    </dependency>
-    <!--存在mybatisplus注解添加相关注解保证不报错-->
-    <dependency>
-      <groupId>com.baomidou</groupId>
-      <artifactId>mybatis-plus-annotation</artifactId>
-      <version>${mybatis-plus-boot-starter.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.baomidou</groupId>
-      <artifactId>mybatis-plus-core</artifactId>
-      <version>${mybatis-plus-boot-starter.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.projectlombok</groupId>
-      <artifactId>lombok</artifactId>
-    </dependency>
-    <!--cloud的基础环境包-->
-    <dependency>
-      <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-context</artifactId>
-    </dependency>
-    <!-- Spring Boot 的 Spring Web MVC 集成 -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
-    </dependency>
-
-
-    <!-- 排除 Spring Boot 依赖的日志包冲突 -->
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.springframework.boot</groupId>
-          <artifactId>spring-boot-starter-logging</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-validation</artifactId>
     </dependency>
-    <!-- Spring Boot 集成 log4j2 -->
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-log4j2</artifactId>
-    </dependency>
 
-    <!-- Spring Boot 集成 swagger -->
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-context</artifactId>
+    </dependency>
     <dependency>
       <groupId>com.spring4all</groupId>
       <artifactId>swagger-spring-boot-starter</artifactId>
-      <version>1.9.0.RELEASE</version>
     </dependency>
-
-    <!-- MySQL 驱动 -->
+    <dependency>
+      <groupId>com.xstudy</groupId>
+      <artifactId>xstudy-base</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+    </dependency>
     <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
@@ -112,23 +74,14 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-log4j2</artifactId>
     </dependency>
-
-    <dependency>
-      <groupId>org.mapstruct</groupId>
-      <artifactId>mapstruct</artifactId>
-      <version>1.5.0.Final</version>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.mapstruct</groupId>
-      <artifactId>mapstruct-processor</artifactId>
-      <version>1.5.0.Final</version>
-      <scope>provided</scope>
-    </dependency>
   </dependencies>
+
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -139,4 +92,5 @@
       </plugin>
     </plugins>
   </build>
+
 </project>
