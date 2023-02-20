@@ -106,13 +106,6 @@
         </exclusion>
       </exclusions>
     </dependency>
-
-    <!-- Spring Boot 集成 log4j2 -->
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-log4j2</artifactId>
-    </dependency>
-
     <dependency>
       <groupId>org.mapstruct</groupId>
       <artifactId>mapstruct</artifactId>
@@ -125,6 +118,12 @@
       <artifactId>mapstruct-processor</artifactId>
       <version>1.5.0.Final</version>
       <scope>provided</scope>
+    </dependency>
+
+    <!-- Spring Boot 集成 log4j2 -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-log4j2</artifactId>
     </dependency>
   </dependencies>
   <build>
