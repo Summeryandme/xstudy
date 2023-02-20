@@ -9,6 +9,7 @@ import com.xstudy.base.model.PageParams;
 import com.xstudy.base.model.PageResult;
 import com.xstudy.content.model.dto.AddCourseDto;
 import com.xstudy.content.model.dto.CourseBaseInfoDto;
+import com.xstudy.content.model.dto.EditCourseDto;
 import com.xstudy.content.model.dto.QueryCourseParamsDto;
 import com.xstudy.content.model.po.CourseBase;
 import com.xstudy.content.model.po.CourseCategory;
@@ -35,6 +36,8 @@ public class CourseBaseServiceImpl implements CourseBaseService {
   private final CourseCategoryMapper courseCategoryMapper;
 
   private final AddCourseDtoMap addCourseDtoMap;
+
+  private final CourseMarketServiceImpl courseMarketService;
 
   @Override
   public PageResult<CourseBase> queryCourseBaseList(
@@ -81,6 +84,7 @@ public class CourseBaseServiceImpl implements CourseBaseService {
     return getCourseBaseInfo(newCourseBase.getId());
   }
 
+  @Override
   public CourseBaseInfoDto getCourseBaseInfo(long courseId) {
 
     CourseBase courseBase = courseBaseMapper.selectById(courseId);
@@ -99,5 +103,35 @@ public class CourseBaseServiceImpl implements CourseBaseService {
     courseBaseInfoDto.setMtName(courseCategoryByMt.getName());
 
     return courseBaseInfoDto;
+  }
+
+  @Transactional
+  @Override
+  public CourseBaseInfoDto updateCourseBase(Long companyId, EditCourseDto dto) {
+    Long courseId = dto.getId();
+    CourseBase courseBase = courseBaseMapper.selectById(courseId);
+    if (courseBase == null) {
+      BusinessException.cast("课程信息不存在");
+    }
+    if (!courseBase.getCompanyId().equals(companyId)) {
+      BusinessException.cast("本机构只允许修改本机构的课程");
+    }
+    BeanUtils.copyProperties(dto, courseBase);
+    courseBase.setChangeDate(LocalDateTime.now());
+    courseBaseMapper.updateById(courseBase);
+    CourseMarket courseMarket = courseMarketMapper.selectById(courseId);
+    if (courseMarket == null) {
+      courseMarket = new CourseMarket();
+    }
+    String charge = dto.getCharge();
+    if (charge.equals("201001")) {
+      Float price = dto.getPrice();
+      if (price == null || price <= 0) {
+        BusinessException.cast("课程设置了收费价格不能为空且必须大于0");
+      }
+    }
+    BeanUtils.copyProperties(dto, courseMarket);
+    courseMarketService.saveOrUpdate(courseMarket);
+    return getCourseBaseInfo(courseId);
   }
 }
