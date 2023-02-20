@@ -1,4 +1,4 @@
-package com.xstudy.content.model;
+package com.xstudy.base.model;
 
 import lombok.Data;
 

@@ -6,51 +6,30 @@ import lombok.Data;
 @Data
 public class CourseBaseInfoDto extends CourseBase {
 
+  /** 收费规则，对应数据字典 */
+  private String charge;
 
- /**
-  * 收费规则，对应数据字典
-  */
- private String charge;
+  /** 价格 */
+  private Float price;
 
- /**
-  * 价格
-  */
- private Float price;
+  /** 原价 */
+  private Float originalPrice;
 
+  /** 咨询qq */
+  private String qq;
 
- /**
-  * 原价
-  */
- private Float originalPrice;
+  /** 微信 */
+  private String wechat;
 
- /**
-  * 咨询qq
-  */
- private String qq;
+  /** 电话 */
+  private String phone;
 
- /**
-  * 微信
-  */
- private String wechat;
+  /** 有效期天数 */
+  private Integer validDays;
 
- /**
-  * 电话
-  */
- private String phone;
+  /** 大分类名称 */
+  private String mtName;
 
- /**
-  * 有效期天数
-  */
- private Integer validDays;
-
- /**
-  * 大分类名称
-  */
- private String mtName;
-
- /**
-  * 小分类名称
-  */
- private String stName;
-
+  /** 小分类名称 */
+  private String stName;
 }

@@ -2,9 +2,11 @@ package com.xstudy.content.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.xstudy.base.exception.CommonError;
+import com.xstudy.base.exception.BusinessException;
 import com.xstudy.content.mapper.AddCourseDtoMap;
-import com.xstudy.content.model.PageParams;
-import com.xstudy.content.model.PageResult;
+import com.xstudy.base.model.PageParams;
+import com.xstudy.base.model.PageResult;
 import com.xstudy.content.model.dto.AddCourseDto;
 import com.xstudy.content.model.dto.CourseBaseInfoDto;
 import com.xstudy.content.model.dto.QueryCourseParamsDto;
@@ -62,7 +64,7 @@ public class CourseBaseServiceImpl implements CourseBaseService {
   public CourseBaseInfoDto createCourseBase(Long companyId, AddCourseDto addCourseDto) {
     String charge = addCourseDto.getCharge();
     if (charge.equals("201001") && addCourseDto.getPrice() == null) {
-      throw new RuntimeException("课程收费但是价格为空");
+      BusinessException.cast("付费课程没有设置费用");
     }
     CourseBase newCourseBase = addCourseDtoMap.toCourseBase(addCourseDto);
     newCourseBase.setCompanyId(companyId);
@@ -74,7 +76,7 @@ public class CourseBaseServiceImpl implements CourseBaseService {
     newCourseMarket.setId(newCourseBase.getId());
     int courseMarketInserted = courseMarketMapper.insert(newCourseMarket);
     if (courseMarketInserted <= 0 || courseBaseInserted <= 0) {
-      throw new RuntimeException("add fail");
+      BusinessException.cast(CommonError.UNKNOWN_ERROR);
     }
     return getCourseBaseInfo(newCourseBase.getId());
   }

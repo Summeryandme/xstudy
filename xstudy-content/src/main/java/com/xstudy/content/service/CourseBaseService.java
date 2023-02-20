@@ -1,7 +1,7 @@
 package com.xstudy.content.service;
 
-import com.xstudy.content.model.PageParams;
-import com.xstudy.content.model.PageResult;
+import com.xstudy.base.model.PageParams;
+import com.xstudy.base.model.PageResult;
 import com.xstudy.content.model.dto.AddCourseDto;
 import com.xstudy.content.model.dto.CourseBaseInfoDto;
 import com.xstudy.content.model.dto.QueryCourseParamsDto;
