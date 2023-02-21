@@ -1,13 +1,17 @@
 package com.xstudy.content.api;
 
+import com.xstudy.content.model.dto.SaveTeachPlanDto;
 import com.xstudy.content.model.dto.TeachplanDto;
 import com.xstudy.content.service.TeachPlanService;
 import java.util.List;
 import javax.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,6 +25,16 @@ public class TeachPlanController {
 
   @GetMapping("{courseId}/tree-nodes")
   public List<TeachplanDto> getTreeNodes(@PathVariable @NotNull Long courseId) {
-    return teachPlanService.findTeachPlanTree(courseId);
+    return teachPlanService.getTree(courseId);
+  }
+
+  @PostMapping
+  public void saveTeachPlan(@RequestBody SaveTeachPlanDto saveTeachPlanDto) {
+    teachPlanService.save(saveTeachPlanDto);
+  }
+
+  @DeleteMapping("{teachplanId}")
+  public void deleteTeachPlan(@PathVariable Long teachplanId) {
+    teachPlanService.delete(teachplanId);
   }
 }

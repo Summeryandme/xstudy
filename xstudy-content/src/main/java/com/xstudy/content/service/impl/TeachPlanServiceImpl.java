@@ -2,7 +2,9 @@ package com.xstudy.content.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.xstudy.base.exception.BusinessException;
 import com.xstudy.content.mapper.TeachPlanMap;
+import com.xstudy.content.model.dto.SaveTeachPlanDto;
 import com.xstudy.content.model.dto.TeachplanDto;
 import com.xstudy.content.model.po.Teachplan;
 import com.xstudy.content.model.po.TeachplanMedia;
@@ -13,7 +15,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +30,7 @@ public class TeachPlanServiceImpl implements TeachPlanService {
   private final TeachplanMediaMapper teachplanMediaMapper;
 
   @Override
-  public List<TeachplanDto> findTeachPlanTree(long courseId) {
+  public List<TeachplanDto> getTree(long courseId) {
     LambdaQueryWrapper<Teachplan> queryWrapper = Wrappers.lambdaQuery(Teachplan.class);
     queryWrapper.eq(Teachplan::getCourseId, courseId);
     List<Teachplan> teachplanList = teachplanMapper.selectList(queryWrapper);
@@ -46,6 +50,41 @@ public class TeachPlanServiceImpl implements TeachPlanService {
           teachplanDto.setTeachPlanTreeNodes(getChildren(teachplanDtoList, teachplanDto));
         });
     return roots;
+  }
+
+  @Override
+  @Transactional
+  public void save(SaveTeachPlanDto teachPlanDto) {
+    Long id = teachPlanDto.getId();
+    if (id != null) {
+      Teachplan teachplan = teachplanMapper.selectById(id);
+      BeanUtils.copyProperties(teachPlanDto, teachplan);
+      teachplanMapper.updateById(teachplan);
+    } else {
+      int count = getTeachPlanCount(teachPlanDto.getCourseId(), teachPlanDto.getParentid());
+      Teachplan teachPlanNew = new Teachplan();
+      teachPlanNew.setOrderby(count + 1);
+      BeanUtils.copyProperties(teachPlanDto, teachPlanNew);
+      teachplanMapper.insert(teachPlanNew);
+    }
+  }
+
+  @Override
+  public void delete(Long teachPlanId) {
+    LambdaQueryWrapper<Teachplan> queryWrapper = Wrappers.lambdaQuery(Teachplan.class);
+    queryWrapper.eq(Teachplan::getParentid, teachPlanId);
+    List<Teachplan> teachplanList = teachplanMapper.selectList(queryWrapper);
+    if (!teachplanList.isEmpty()) {
+      throw BusinessException.info("课程计划信息还有子级信息，无法操作");
+    }
+    teachplanMapper.deleteById(teachPlanId);
+  }
+
+  private int getTeachPlanCount(Long courseId, Long parentId) {
+    LambdaQueryWrapper<Teachplan> queryWrapper = Wrappers.lambdaQuery(Teachplan.class);
+    queryWrapper.eq(Teachplan::getCourseId, courseId);
+    queryWrapper.eq(Teachplan::getParentid, parentId);
+    return teachplanMapper.selectCount(queryWrapper);
   }
 
   private List<TeachplanDto> getChildren(

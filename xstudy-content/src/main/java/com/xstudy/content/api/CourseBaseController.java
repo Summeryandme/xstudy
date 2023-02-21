@@ -45,6 +45,6 @@ public class CourseBaseController {
 
   @PutMapping
   public CourseBaseInfoDto modifyCourseBase(@RequestBody @Validated EditCourseDto editCourseDto) {
-    return courseBaseService.updateCourseBase(22L, editCourseDto);
+    return courseBaseService.updateCourseBase(1232141425L, editCourseDto);
   }
 }
