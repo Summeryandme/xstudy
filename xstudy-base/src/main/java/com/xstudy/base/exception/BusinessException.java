@@ -1,7 +1,6 @@
 package com.xstudy.base.exception;
 
 public class BusinessException extends RuntimeException{
-  private static final long serialVersionUID = 5565760508056698922L;
   private final String errMessage;
 
   public BusinessException(String errMessage) {
@@ -13,11 +12,11 @@ public class BusinessException extends RuntimeException{
     return errMessage;
   }
 
-  public static void cast(CommonError commonError){
-    throw new BusinessException(commonError.getErrMessage());
+  public static BusinessException info(CommonError commonError){
+    return new BusinessException(commonError.getErrMessage());
   }
-  public static void cast(String errMessage){
-    throw new BusinessException(errMessage);
+  public static BusinessException info(String errMessage){
+    return new BusinessException(errMessage);
   }
 
 }

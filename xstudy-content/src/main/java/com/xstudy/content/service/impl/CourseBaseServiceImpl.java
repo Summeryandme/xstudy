@@ -67,7 +67,7 @@ public class CourseBaseServiceImpl implements CourseBaseService {
   public CourseBaseInfoDto createCourseBase(Long companyId, AddCourseDto addCourseDto) {
     String charge = addCourseDto.getCharge();
     if (charge.equals("201001") && addCourseDto.getPrice() == null) {
-      BusinessException.cast("付费课程没有设置费用");
+      throw BusinessException.info("付费课程没有设置费用");
     }
     CourseBase newCourseBase = addCourseDtoMap.toCourseBase(addCourseDto);
     newCourseBase.setCompanyId(companyId);
@@ -79,7 +79,7 @@ public class CourseBaseServiceImpl implements CourseBaseService {
     newCourseMarket.setId(newCourseBase.getId());
     int courseMarketInserted = courseMarketMapper.insert(newCourseMarket);
     if (courseMarketInserted <= 0 || courseBaseInserted <= 0) {
-      BusinessException.cast(CommonError.UNKNOWN_ERROR);
+      throw BusinessException.info(CommonError.UNKNOWN_ERROR);
     }
     return getCourseBaseInfo(newCourseBase.getId());
   }
@@ -111,10 +111,10 @@ public class CourseBaseServiceImpl implements CourseBaseService {
     Long courseId = dto.getId();
     CourseBase courseBase = courseBaseMapper.selectById(courseId);
     if (courseBase == null) {
-      BusinessException.cast("课程信息不存在");
+      throw BusinessException.info("课程信息不存在");
     }
     if (!courseBase.getCompanyId().equals(companyId)) {
-      BusinessException.cast("本机构只允许修改本机构的课程");
+      throw BusinessException.info("本机构只允许修改本机构的课程");
     }
     BeanUtils.copyProperties(dto, courseBase);
     courseBase.setChangeDate(LocalDateTime.now());
@@ -127,7 +127,7 @@ public class CourseBaseServiceImpl implements CourseBaseService {
     if (charge.equals("201001")) {
       Float price = dto.getPrice();
       if (price == null || price <= 0) {
-        BusinessException.cast("课程设置了收费价格不能为空且必须大于0");
+        throw BusinessException.info("课程设置了收费价格不能为空且必须大于0");
       }
     }
     BeanUtils.copyProperties(dto, courseMarket);
