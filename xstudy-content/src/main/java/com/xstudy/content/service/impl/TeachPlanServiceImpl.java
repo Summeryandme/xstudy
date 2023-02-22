@@ -86,18 +86,12 @@ public class TeachPlanServiceImpl implements TeachPlanService {
   }
 
   @Override
+  @Transactional
   public void moveDown(Long teachPlanId) {
     Teachplan upPlan =
         teachplanMapper.selectOne(
             Wrappers.lambdaQuery(Teachplan.class).eq(Teachplan::getId, teachPlanId));
-    LambdaQueryWrapper<Teachplan> wrapper = Wrappers.lambdaQuery(Teachplan.class);
-    Long parentId = upPlan.getParentid();
-    wrapper.eq(Teachplan::getParentid, parentId);
-    List<Teachplan> sameParentIdTeachPlans = teachplanMapper.selectList(wrapper);
-    List<Teachplan> sortedPlans =
-        sameParentIdTeachPlans.stream()
-            .sorted(Comparator.comparingInt(Teachplan::getOrderby))
-            .collect(Collectors.toList());
+    List<Teachplan> sortedPlans = getSortedSameParentPlans(upPlan);
     int index = sortedPlans.indexOf(upPlan);
     if (index + 1 >= sortedPlans.size()) {
       throw BusinessException.info("已是最后一层，无法下移");
@@ -108,6 +102,36 @@ public class TeachPlanServiceImpl implements TeachPlanService {
     downPlan.setOrderby(temp);
     teachplanMapper.updateById(upPlan);
     teachplanMapper.updateById(downPlan);
+  }
+
+  @Override
+  @Transactional
+  public void moveUp(Long teachPlanId) {
+    Teachplan downPlan =
+        teachplanMapper.selectOne(
+            Wrappers.lambdaQuery(Teachplan.class).eq(Teachplan::getId, teachPlanId));
+    List<Teachplan> sortedSameParentPlans = getSortedSameParentPlans(downPlan);
+    int index = sortedSameParentPlans.indexOf(downPlan);
+    if (index - 1 < 0) {
+      throw BusinessException.info("已是最上一层，无法上移");
+    }
+    Teachplan upPlan = sortedSameParentPlans.get(index - 1);
+    Integer temp = downPlan.getOrderby();
+    downPlan.setOrderby(upPlan.getOrderby());
+    upPlan.setOrderby(temp);
+    teachplanMapper.updateById(upPlan);
+    teachplanMapper.updateById(downPlan);
+  }
+
+  private List<Teachplan> getSortedSameParentPlans(Teachplan upPlan) {
+    LambdaQueryWrapper<Teachplan> wrapper = Wrappers.lambdaQuery(Teachplan.class);
+    Long parentId = upPlan.getParentid();
+    wrapper.eq(Teachplan::getParentid, parentId);
+    wrapper.eq(Teachplan::getCourseId, upPlan.getCourseId());
+    List<Teachplan> sameParentIdTeachPlans = teachplanMapper.selectList(wrapper);
+    return sameParentIdTeachPlans.stream()
+        .sorted(Comparator.comparingInt(Teachplan::getOrderby))
+        .collect(Collectors.toList());
   }
 
   private int getTeachPlanCount(Long courseId, Long parentId) {

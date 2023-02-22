@@ -42,4 +42,8 @@ public class TeachPlanController {
   public void moveDownTeachPlan(@PathVariable Long teachplanId) {
     teachPlanService.moveDown(teachplanId);
   }
+  @PostMapping("/moveup/{teachplanId}")
+  public void moveUpTeachPlan(@PathVariable Long teachplanId) {
+    teachPlanService.moveUp(teachplanId);
+  }
 }

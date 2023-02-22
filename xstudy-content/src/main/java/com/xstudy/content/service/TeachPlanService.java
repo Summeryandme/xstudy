@@ -12,4 +12,6 @@ public interface TeachPlanService {
   void delete(Long teachPlanId);
 
   void moveDown(Long teachPlanId);
+
+  void moveUp(Long teachPlanId);
 }
