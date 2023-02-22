@@ -11,6 +11,7 @@ import com.xstudy.content.model.po.TeachplanMedia;
 import com.xstudy.content.repository.TeachplanMapper;
 import com.xstudy.content.repository.TeachplanMediaMapper;
 import com.xstudy.content.service.TeachPlanService;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -78,6 +79,35 @@ public class TeachPlanServiceImpl implements TeachPlanService {
       throw BusinessException.info("课程计划信息还有子级信息，无法操作");
     }
     teachplanMapper.deleteById(teachPlanId);
+    LambdaQueryWrapper<TeachplanMedia> mediaLambdaQueryWrapper =
+        Wrappers.lambdaQuery(TeachplanMedia.class);
+    mediaLambdaQueryWrapper.eq(TeachplanMedia::getTeachplanId, teachPlanId);
+    teachplanMediaMapper.delete(mediaLambdaQueryWrapper);
+  }
+
+  @Override
+  public void moveDown(Long teachPlanId) {
+    Teachplan upPlan =
+        teachplanMapper.selectOne(
+            Wrappers.lambdaQuery(Teachplan.class).eq(Teachplan::getId, teachPlanId));
+    LambdaQueryWrapper<Teachplan> wrapper = Wrappers.lambdaQuery(Teachplan.class);
+    Long parentId = upPlan.getParentid();
+    wrapper.eq(Teachplan::getParentid, parentId);
+    List<Teachplan> sameParentIdTeachPlans = teachplanMapper.selectList(wrapper);
+    List<Teachplan> sortedPlans =
+        sameParentIdTeachPlans.stream()
+            .sorted(Comparator.comparingInt(Teachplan::getOrderby))
+            .collect(Collectors.toList());
+    int index = sortedPlans.indexOf(upPlan);
+    if (index + 1 >= sortedPlans.size()) {
+      throw BusinessException.info("已是最后一层，无法下移");
+    }
+    Teachplan downPlan = sortedPlans.get(index + 1);
+    Integer temp = upPlan.getOrderby();
+    upPlan.setOrderby(downPlan.getOrderby());
+    downPlan.setOrderby(temp);
+    teachplanMapper.updateById(upPlan);
+    teachplanMapper.updateById(downPlan);
   }
 
   private int getTeachPlanCount(Long courseId, Long parentId) {

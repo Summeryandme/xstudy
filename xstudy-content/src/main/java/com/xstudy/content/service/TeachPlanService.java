@@ -9,5 +9,7 @@ public interface TeachPlanService {
 
   void save(SaveTeachPlanDto teachplanDto);
 
-  void delete(Long teachplanId);
+  void delete(Long teachPlanId);
+
+  void moveDown(Long teachPlanId);
 }
