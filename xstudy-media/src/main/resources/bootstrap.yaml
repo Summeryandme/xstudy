@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: media
+  cloud:
+    nacos:
+      server-addr: localhost:8848
+      discovery:
+        namespace: xstudy-${spring.profiles.active}
+        group: xstudy
+      config:
+        namespace: xstudy-${spring.profiles.active}
+        group: xstudy
+        file-extension: yaml
+        refresh-enabled: true
+        shared-configs:
+          - data-id: logging-${spring.profiles.active}.yaml
+            group: xstudy-common
+            refresh: true
+  profiles:
+    active: dev
