@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: gateway
+  cloud:
+    nacos:
+      server-addr: localhost:8848
+      discovery:
+        namespace: xstudy-dev
+        group: xstudy
+      config:
+        namespace: xstudy-dev
+        group: xstudy
+        file-extension: yaml
+        refresh-enabled: true
+        shared-configs:
+          - data-id: logging-${spring.profiles.active}.yaml
+            group: xstudy-common
+            refresh: true
+  profiles:
+    active: dev
