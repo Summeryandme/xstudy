@@ -2,10 +2,12 @@ package com.xstudy.media.service;
 
 import com.xstudy.base.model.PageParams;
 import com.xstudy.base.model.PageResult;
+import com.xstudy.base.model.RestResponse;
 import com.xstudy.media.model.dto.QueryMediaParamsDto;
 import com.xstudy.media.model.dto.UploadFileParamsDto;
 import com.xstudy.media.model.dto.UploadFileResultDto;
 import com.xstudy.media.model.po.MediaFiles;
+import java.io.IOException;
 
 public interface MediaFileService {
 
@@ -25,4 +27,14 @@ public interface MediaFileService {
       UploadFileParamsDto uploadFileParamsDto,
       String bucket,
       String objectName);
+
+  RestResponse<Boolean> checkFile(String fileMd5);
+
+  RestResponse<Boolean> checkChunk(String fileMd5, int chunkIndex);
+
+  RestResponse<Boolean> uploadChunk(String fileMd5, int chunk, byte[] bytes);
+
+  RestResponse<Boolean> mergeChunks(
+      Long companyId, String fileMd5, int chunkTotal, UploadFileParamsDto uploadFileParamsDto)
+      throws IOException;
 }
