@@ -37,4 +37,6 @@ public interface MediaFileService {
   RestResponse<Boolean> mergeChunks(
       Long companyId, String fileMd5, int chunkTotal, UploadFileParamsDto uploadFileParamsDto)
       throws IOException;
+
+  MediaFiles getFileById(String mediaId);
 }

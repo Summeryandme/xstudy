@@ -196,6 +196,11 @@ public class MediaFileServiceImpl implements MediaFileService {
     return RestResponse.success();
   }
 
+  @Override
+  public MediaFiles getFileById(String mediaId) {
+    return mediaFilesMapper.selectById(mediaId);
+  }
+
   private String getFilePathByMd5(String fileMd5, String fileExt) {
     return fileMd5.charAt(0) + "/" + fileMd5.charAt(1) + "/" + fileMd5 + "/" + fileMd5 + fileExt;
   }
@@ -274,13 +279,21 @@ public class MediaFileServiceImpl implements MediaFileService {
       UploadFileParamsDto uploadFileParamsDto,
       String bucket,
       String objectName) {
+    String extension = null;
+    if (objectName.contains(".")) {
+      extension = objectName.substring(objectName.lastIndexOf("."));
+    }
+    String contentType = getMimeTypeByExtension(extension);
+
     MediaFiles mediaFiles = mediaFilesMapper.selectById(fileMd5);
     if (mediaFiles == null) {
       mediaFiles = new MediaFiles();
       BeanUtils.copyProperties(uploadFileParamsDto, mediaFiles);
       mediaFiles.setId(fileMd5);
       mediaFiles.setCompanyId(companyId);
-      mediaFiles.setUrl("/" + bucket + "/" + objectName);
+      if (contentType.contains("image") || contentType.contains("mp4")) {
+        mediaFiles.setUrl("/" + bucket + "/" + objectName);
+      }
       mediaFiles.setFilePath(objectName);
       mediaFiles.setBucket(bucket);
       mediaFiles.setCreateDate(LocalDateTime.now());

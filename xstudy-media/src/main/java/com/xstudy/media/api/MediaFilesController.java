@@ -1,7 +1,9 @@
 package com.xstudy.media.api;
 
+import com.xstudy.base.exception.BusinessException;
 import com.xstudy.base.model.PageParams;
 import com.xstudy.base.model.PageResult;
+import com.xstudy.base.model.RestResponse;
 import com.xstudy.media.map.MediaFileMap;
 import com.xstudy.media.model.dto.QueryMediaParamsDto;
 import com.xstudy.media.model.dto.UploadFileParamsDto;
@@ -12,7 +14,10 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -54,5 +59,15 @@ public class MediaFilesController {
     Long companyId = 123L;
     return mediaFileService.uploadFile(
         companyId, uploadFileParamsDto, multipartFile.getBytes(), folder, objectName);
+  }
+
+  @ApiOperation("预览文件")
+  @GetMapping("/preview/{mediaId}")
+  public RestResponse<String> getPlayUrlByMediaId(@PathVariable String mediaId) {
+    MediaFiles mediaFiles = mediaFileService.getFileById(mediaId);
+    if (mediaFiles == null || StringUtils.isEmpty(mediaFiles.getUrl())) {
+      throw BusinessException.info("视频还没有转码处理");
+    }
+    return RestResponse.success(mediaFiles.getUrl());
   }
 }
