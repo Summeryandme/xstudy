@@ -12,7 +12,9 @@ import com.xstudy.media.model.dto.QueryMediaParamsDto;
 import com.xstudy.media.model.dto.UploadFileParamsDto;
 import com.xstudy.media.model.dto.UploadFileResultDto;
 import com.xstudy.media.model.po.MediaFiles;
+import com.xstudy.media.model.po.MediaProcess;
 import com.xstudy.media.repository.MediaFilesMapper;
+import com.xstudy.media.repository.MediaProcessMapper;
 import com.xstudy.media.service.MediaFileService;
 import io.minio.GetObjectArgs;
 import io.minio.GetObjectResponse;
@@ -51,6 +53,8 @@ public class MediaFileServiceImpl implements MediaFileService {
   private final MediaFilesMapper mediaFilesMapper;
 
   private final MinioClient minioClient;
+
+  private final MediaProcessMapper mediaProcessMapper;
 
   @Value("${minio.bucket.files}")
   private String mediaBucket;
@@ -223,6 +227,7 @@ public class MediaFileServiceImpl implements MediaFileService {
     return files;
   }
 
+  @Override
   public void downloadFileFromMinIO(File file, String bucket, String objectName) {
     try (InputStream fileInputStream =
             minioClient.getObject(
@@ -283,7 +288,7 @@ public class MediaFileServiceImpl implements MediaFileService {
     if (objectName.contains(".")) {
       extension = objectName.substring(objectName.lastIndexOf("."));
     }
-    String contentType = getMimeTypeByExtension(extension);
+    String mineType = getMimeTypeByExtension(extension);
 
     MediaFiles mediaFiles = mediaFilesMapper.selectById(fileMd5);
     if (mediaFiles == null) {
@@ -291,7 +296,7 @@ public class MediaFileServiceImpl implements MediaFileService {
       BeanUtils.copyProperties(uploadFileParamsDto, mediaFiles);
       mediaFiles.setId(fileMd5);
       mediaFiles.setCompanyId(companyId);
-      if (contentType.contains("image") || contentType.contains("mp4")) {
+      if (mineType.contains("image") || mineType.contains("mp4")) {
         mediaFiles.setUrl("/" + bucket + "/" + objectName);
       }
       mediaFiles.setFilePath(objectName);
@@ -299,15 +304,19 @@ public class MediaFileServiceImpl implements MediaFileService {
       mediaFiles.setCreateDate(LocalDateTime.now());
       mediaFiles.setAuditStatus("002003");
       mediaFiles.setStatus("1");
-      // 保存文件信息到文件表
-      int insert = mediaFilesMapper.insert(mediaFiles);
-      if (insert < 0) {
-        throw BusinessException.info("保存文件信息失败");
+      mediaFilesMapper.insert(mediaFiles);
+
+      if (mineType.equals("video/x-msvideo")) {
+        MediaProcess mediaProcess = new MediaProcess();
+        BeanUtils.copyProperties(mediaFiles, mediaProcess);
+        mediaProcess.setStatus("1"); // 未处理
+        mediaProcessMapper.insert(mediaProcess);
       }
     }
     return mediaFiles;
   }
 
+  @Override
   public void addMediaFilesToMinIO(String filePath, String bucket, String objectName) {
     // 扩展名
     String extension = null;

@@ -7,6 +7,7 @@ import com.xstudy.media.model.dto.QueryMediaParamsDto;
 import com.xstudy.media.model.dto.UploadFileParamsDto;
 import com.xstudy.media.model.dto.UploadFileResultDto;
 import com.xstudy.media.model.po.MediaFiles;
+import java.io.File;
 import java.io.IOException;
 
 public interface MediaFileService {
@@ -39,4 +40,8 @@ public interface MediaFileService {
       throws IOException;
 
   MediaFiles getFileById(String mediaId);
+
+  void downloadFileFromMinIO(File file, String bucket, String objectName);
+
+  void addMediaFilesToMinIO(String absolutePath, String bucket, String objectName);
 }
