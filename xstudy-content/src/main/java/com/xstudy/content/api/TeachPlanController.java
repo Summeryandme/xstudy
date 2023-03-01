@@ -1,5 +1,6 @@
 package com.xstudy.content.api;
 
+import com.xstudy.content.model.dto.BindTeachplanMediaDto;
 import com.xstudy.content.model.dto.SaveTeachPlanDto;
 import com.xstudy.content.model.dto.TeachplanDto;
 import com.xstudy.content.service.TeachPlanService;
@@ -42,8 +43,14 @@ public class TeachPlanController {
   public void moveDownTeachPlan(@PathVariable Long teachplanId) {
     teachPlanService.moveDown(teachplanId);
   }
+
   @PostMapping("/moveup/{teachplanId}")
   public void moveUpTeachPlan(@PathVariable Long teachplanId) {
     teachPlanService.moveUp(teachplanId);
+  }
+
+  @PostMapping("/association/media")
+  public void associationMedia(@RequestBody BindTeachplanMediaDto bindTeachplanMediaDto) {
+    teachPlanService.associationMedia(bindTeachplanMediaDto);
   }
 }

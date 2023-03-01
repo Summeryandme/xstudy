@@ -1,7 +1,9 @@
 package com.xstudy.content.service;
 
+import com.xstudy.content.model.dto.BindTeachplanMediaDto;
 import com.xstudy.content.model.dto.SaveTeachPlanDto;
 import com.xstudy.content.model.dto.TeachplanDto;
+import com.xstudy.content.model.po.TeachplanMedia;
 import java.util.List;
 
 public interface TeachPlanService {
@@ -14,4 +16,6 @@ public interface TeachPlanService {
   void moveDown(Long teachPlanId);
 
   void moveUp(Long teachPlanId);
+
+  TeachplanMedia associationMedia(BindTeachplanMediaDto bindTeachplanMediaDto);
 }

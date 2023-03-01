@@ -102,6 +102,7 @@ public class VideoTask {
     if (!await) {
       log.error("处理视频超时");
     }
+
   }
 
   private String getFilePath(String fileMd5) {

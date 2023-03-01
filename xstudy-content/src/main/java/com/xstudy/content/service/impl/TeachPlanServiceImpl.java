@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.xstudy.base.exception.BusinessException;
 import com.xstudy.content.mapper.TeachPlanMap;
+import com.xstudy.content.model.dto.BindTeachplanMediaDto;
 import com.xstudy.content.model.dto.SaveTeachPlanDto;
 import com.xstudy.content.model.dto.TeachplanDto;
 import com.xstudy.content.model.po.Teachplan;
@@ -11,6 +12,7 @@ import com.xstudy.content.model.po.TeachplanMedia;
 import com.xstudy.content.repository.TeachplanMapper;
 import com.xstudy.content.repository.TeachplanMediaMapper;
 import com.xstudy.content.service.TeachPlanService;
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -121,6 +123,33 @@ public class TeachPlanServiceImpl implements TeachPlanService {
     upPlan.setOrderby(temp);
     teachplanMapper.updateById(upPlan);
     teachplanMapper.updateById(downPlan);
+  }
+
+  @Transactional
+  @Override
+  public TeachplanMedia associationMedia(BindTeachplanMediaDto bindTeachplanMediaDto) {
+    Long teachplanId = bindTeachplanMediaDto.getTeachplanId();
+    Teachplan teachplan = teachplanMapper.selectById(teachplanId);
+    if (teachplan == null) {
+      throw BusinessException.info("教学计划不存在");
+    }
+    Integer grade = teachplan.getGrade();
+    if (grade != 2) {
+      throw BusinessException.info("只允许第二级教学计划绑定媒资文件");
+    }
+    Long courseId = teachplan.getCourseId();
+
+    teachplanMediaMapper.delete(
+        new LambdaQueryWrapper<TeachplanMedia>().eq(TeachplanMedia::getTeachplanId, teachplanId));
+
+    TeachplanMedia teachplanMedia = new TeachplanMedia();
+    teachplanMedia.setCourseId(courseId);
+    teachplanMedia.setTeachplanId(teachplanId);
+    teachplanMedia.setMediaFilename(bindTeachplanMediaDto.getFileName());
+    teachplanMedia.setMediaId(bindTeachplanMediaDto.getMediaId());
+    teachplanMedia.setCreateDate(LocalDateTime.now());
+    teachplanMediaMapper.insert(teachplanMedia);
+    return teachplanMedia;
   }
 
   private List<Teachplan> getSortedSameParentPlans(Teachplan upPlan) {
